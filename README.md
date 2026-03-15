@@ -26,14 +26,15 @@ The platform operates on a decoupled microservices architecture bridging a MERN 
 
 ## 📂 Project Structure
 
+```text
 PROJECT-TITAN/
-├── mern-backend/         # Node.js REST API, Docker Orchestration, & Express Interceptors
-│   ├── controllers/      # Route logic & AI process triggers
-│   ├── models/           # MongoDB Mongoose Schemas (User, Ticket Ledger)
-│   ├── healer-workspace/ # Ephemeral Git cloning & Python Swarm execution directory
-│   └── server.js         # Core application entry & Global SRE Trap
-├── frontend/             # React + Vite Client Application (TailwindCSS, Lucide Icons)
-└── README.md             # System Documentation
+├── mern-backend/       # Node.js API, Docker & SRE Trap
+│   ├── controllers/    # Route logic & AI triggers
+│   ├── models/         # MongoDB Schemas
+│   ├── healer-workspace/ 
+│   └── server.js       # Global SRE Entry Point
+├── frontend/           # React + Vite UI
+└── README.md           # System Documentation
 
 ## 🛠️ Installation & Setup
 
