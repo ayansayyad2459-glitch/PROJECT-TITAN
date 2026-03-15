@@ -50,9 +50,10 @@ PROJECT-TITAN/
 ```bash
 git clone https://github.com/your-username/PROJECT-TITAN.git
 cd PROJECT-TITAN
+```
 
-2. Configure the Node.js Backend
-Bash
+## 2. Configure the Node.js Backend
+```Bash
 cd mern-backend
 npm install
 
@@ -60,31 +61,34 @@ Create a .env file in the mern-backend directory:
 PORT=5000
 MONGO_URI=mongodb+srv://<your_cluster_url>
 JWT_SECRET=your_super_secret_key
+```
 
-3. Configure the Python Swarm Engine
+## 3. Configure the Python Swarm Engine
 Ensure you are still inside the mern-backend directory, as the Node server triggers the Python script directly.
 
-Bash
+```Bash
 pip install crewai langchain-groq python-dotenv litellm
 
 Create a .env file specifically inside mern-backend/healer-workspace for the agents:
 GROQ_API_KEY=gsk_your_groq_api_key_here
+```
 
-4. Configure the React Frontend:
-Bash'
+## 4. Configure the React Frontend:
+``` Bash
 cd ../frontend
 npm install
-bash'''
+```
 
-5. Boot the Architecture
+## 5. Boot the Architecture
+```bash
 You will need two terminal windows:
 
 -Terminal 1 (Backend): cd mern-backend && node server.js
 
 -Terminal 2 (Frontend): cd frontend && npm run dev
+```
 
-
-🚦 System Usage & Workflow
+## 🚦 System Usage & Workflow
 
 1. **Trigger the Trap:** Navigate to the **Chaos** tab on the dashboard and deploy the Chaos Payload. This simulates a fatal server crash.
 
@@ -97,7 +101,7 @@ You will need two terminal windows:
 5. **Artifact Extraction:** Download the verified `.zip` payload directly from the dashboard.
 
 
-🐞 Troubleshooting & SRE Notes
+## 🐞 Troubleshooting & SRE Notes
 Docker Sandbox Failing: If you see failed to connect to the docker API, ensure Docker Desktop is actively running on your host machine before triggering the swarm.
 
 CrewAI/Groq Rate Limits (429): If the swarm fails mid-generation, you may have hit the Groq free-tier rate limit. Wait 60 seconds and retry, or upgrade your API tier.
@@ -105,5 +109,5 @@ CrewAI/Groq Rate Limits (429): If the swarm fails mid-generation, you may have h
 Cross-Origin (CORS) Blocks: Ensure your frontend URL (http://localhost:5173) is explicitly allowed in the server.js CORS configuration.
 
 
-📜 License
+## 📜 License
 Built for educational and enterprise-architecture demonstration purposes by Ayan Sayyad. Licensed under the MIT License.
