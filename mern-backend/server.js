@@ -37,7 +37,7 @@ app.get('/downloads/:filename', (req, res) => {
 
 // 👉 YOUR HANDWRITTEN ROUTES
 app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/tickets', require('./routes/ticketRoutes'));
+app.use('/api/tickets', require('./routes/ticketroutes'));
 app.use('/api/healer', require('./routes/healerroutes'));
 
 // --- FEATURE 2: THE AUTOMATED SRE TRAP ---
