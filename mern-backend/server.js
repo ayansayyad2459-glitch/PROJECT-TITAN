@@ -10,7 +10,8 @@ connectDB();
 const app = express();
 
 app.use(cors({
-  origin: "https://project-titan-f8lqk5nze-ayansayyad2459-glitchs-projects.vercel.app", // Use your actual Vercel URL
+  origin: "*", 
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 app.use(express.json());
