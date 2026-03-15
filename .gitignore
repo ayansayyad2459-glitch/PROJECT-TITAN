@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Environment Variables (NEVER PUSH THESE)
+.env
+.env.*
+
+# Workspaces & AI Clones
+healer-workspace/
+temp_repos/
+
+# Zips and Logs
+*.zip
+*.log
+npm-debug.log*
+
+# Editor directories
+.vscode/
