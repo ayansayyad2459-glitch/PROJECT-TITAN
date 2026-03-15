@@ -34,7 +34,8 @@ PROJECT-TITAN/
 │   ├── healer-workspace/ 
 │   └── server.js       # Global SRE Entry Point
 ├── frontend/           # React + Vite UI
-└── README.md           # System Documentation
+└── README.md           # System Documentation 
+```
 
 ## 🛠️ Installation & Setup
 
