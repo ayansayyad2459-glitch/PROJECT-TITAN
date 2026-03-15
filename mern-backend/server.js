@@ -7,6 +7,13 @@ const connectDB = require('./config/db');
 const { triggerAIHealer } = require('./utils/services/aiServices'); // 👈 Import the Brain
 dotenv.config();
 connectDB();
+const fs = require('fs');
+const downloadDir = path.join(__dirname, 'public', 'downloads');
+if (!fs.existsSync(downloadDir)) {
+    fs.mkdirSync(downloadDir, { recursive: true });
+    console.log(`[SYSTEM] Created directory: ${downloadDir}`);
+}
+
 const app = express();
 
 app.use(cors({
@@ -59,7 +66,7 @@ app.use(async (err, req, res, next) => {
             description: err.message || "Fatal runtime fault injected by engineer.",
             status: "Open",
             source: "Automated",
-            user: err.userId // 👈 THIS IS THE FIX! Link it to the logged-in user
+            user: req.user ? req.user._id : null // 👈 THIS IS THE FIX! Link it to the logged-in user
         });
 
         console.log(`[TITAN BRAIN] ✅ Incident logged to DB.`);
