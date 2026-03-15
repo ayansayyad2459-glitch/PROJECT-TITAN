@@ -9,7 +9,10 @@ dotenv.config();
 connectDB();
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "https://project-titan-f8lqk5nze-ayansayyad2459-glitchs-projects.vercel.app", // Use your actual Vercel URL
+  credentials: true
+}));
 app.use(express.json());
 
 // Add this right below app.use(express.json());
