@@ -62,7 +62,7 @@ const Dashboard = () => {
     // --- DATA FETCHING ---
     const fetchTickets = async () => {
         try {
-            const res = await fetch('https://project-titan-ychw.onrender.com/api/tickets', {
+            const res = await fetch('https://project-titan-1.onrender.com/api/tickets', {
                 headers: { Authorization: `Bearer ${user?.token}` }
             });
             if (res.ok) {
@@ -77,7 +77,7 @@ const Dashboard = () => {
         if (!window.confirm("⚠️ WARNING: Are you sure you want to permanently purge this record from the Ledger?")) return;
         
         try {
-            const res = await fetch(`https://project-titan-ychw.onrender.com/${ticketId}`, {
+            const res = await fetch(`https://project-titan-1.onrender.com/${ticketId}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${user?.token}` }
             });
@@ -94,7 +94,7 @@ const Dashboard = () => {
 
     const fetchSystemStats = async () => {
         try {
-            const res = await fetch('https://project-titan-ychw.onrender.com/api/healer/stats', {
+            const res = await fetch('https://project-titan-1.onrender.com/api/healer/stats', {
                 headers: { Authorization: `Bearer ${user?.token}` }
             });
             if (res.ok) {
@@ -118,7 +118,7 @@ const Dashboard = () => {
         if(!window.confirm("⚠️ SYSTEM WARNING: Injecting fatal fault into live backend. Proceed?")) return;
         
         try {
-            const res = await fetch('https://project-titan-ychw.onrender.com/api/healer/crash', {
+            const res = await fetch('https://project-titan-1.onrender.com/api/healer/crash', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${user?.token}` }
             });
@@ -174,7 +174,7 @@ const Dashboard = () => {
         });
         
         try {
-            const res = await fetch('https://project-titan-ychw.onrender.com/api/healer/start', {
+            const res = await fetch('https://project-titan-1.onrender.com/api/healer/start', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user?.token}` },
                 body: JSON.stringify({ repoUrl, crashDescription: isFullScan ? "FULL_REPO_SCAN" : crashDesc })
@@ -185,7 +185,7 @@ const Dashboard = () => {
                     setTerminalLogs(prev => [...prev, "MISSION COMPLETE. Payload ready."]);
                     setStatus('SUCCESS');
                     const repoName = repoUrl.split('/').pop().replace('.git', '');
-                    setDownloadLink(`https://project-titan-ychw.onrender.com/downloads/${repoName}-titan-fix-latest.zip`);
+                    setDownloadLink(`https://project-titan-1.onrender.com/downloads/${repoName}-titan-fix-latest.zip`);
                     fetchTickets(); 
                     fetchSystemStats();
                 }, 32000); 
