@@ -1,0 +1,4 @@
+crewai
+langchain
+google-generativeai
+# add any other python packages your swarm needs
