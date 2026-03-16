@@ -26,8 +26,8 @@ COPY . .
 # Install Node dependencies
 RUN npm install
 
-# Install Python dependencies (Create a requirements.txt if you haven't!)
- RUN pip3 install -r requirements.txt --break-system-packages
+# Install Python dependencies (Uncomment if you have a requirements.txt)
+RUN pip3 install -r requirements.txt --break-system-packages
 
 # Expose the port
 EXPOSE 5000
