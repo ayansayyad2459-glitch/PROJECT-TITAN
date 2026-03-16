@@ -149,6 +149,11 @@ const pythonScript = path.join(process.cwd(), 'ai-sre-engine', 'healeragent.py')
             const zipPath = path.join(downloadsDir, zipFileName);
 
             try {
+                // 👇 FIX: Delete heavy hidden folders to prevent RAM crashes 👇
+                console.log("[TITAN BRAIN] 🧹 Scrubbing heavy .git and node_modules data to prevent memory overload...");
+                shell.rm('-rf', path.join(repoPath, '.git'));
+                shell.rm('-rf', path.join(repoPath, 'node_modules'));
+
                 const zip = new AdmZip();
                 zip.addLocalFolder(repoPath, repoName); 
                 zip.writeZip(zipPath);        
