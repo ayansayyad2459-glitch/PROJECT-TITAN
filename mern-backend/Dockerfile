@@ -13,8 +13,8 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Node.js (Version 18)
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+# 👇 FIX 1: Upgraded Node.js to Version 22 to fix EBADENGINE warning
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 RUN apt-get install -y nodejs
 
 # Set up the working directory
@@ -26,8 +26,8 @@ COPY . .
 # Install Node dependencies
 RUN npm install
 
-# Install Python dependencies (Uncomment if you have a requirements.txt)
-RUN pip3 install -r requirements.txt --break-system-packages
+# 👇 FIX 2: Removed the broken flag from pip3 install
+RUN pip3 install -r requirements.txt
 
 # Expose the port
 EXPOSE 5000
