@@ -171,4 +171,5 @@ const pythonScript = path.join(process.cwd(), 'ai-sre-engine', 'healeragent.py')
             console.error("[TITAN BRAIN] ⚠️ AI Agent failed to generate report. No zip generated.");
         }
     });
+};
 module.exports = { triggerAIHealer };
