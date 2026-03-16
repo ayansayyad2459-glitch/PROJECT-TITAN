@@ -2,4 +2,6 @@ crewai
 langchain
 google-generativeai
 crewai-tools
+litellm
+groq
 # add any other python packages your swarm needs
