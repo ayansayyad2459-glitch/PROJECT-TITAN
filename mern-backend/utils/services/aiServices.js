@@ -111,7 +111,8 @@ const pythonScript = path.join(process.cwd(), 'ai-sre-engine', 'healeragent.py')
 
     console.log(`[TITAN BRAIN] 🤖 Deploying Agent: healeragent.py`);
     
-    const pythonProcess = spawn(venvPython, [pythonScript, type, repoPath]);
+   const customPrompt = data.crashDescription || "No specific instructions provided.";
+   const pythonProcess = spawn(venvPython, [pythonScript, type, repoPath, customPrompt]);
 
     pythonProcess.on('error', (err) => {
         console.error(`[TITAN ERROR] ❌ Failed to start Python process: ${err.message}`);

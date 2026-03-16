@@ -61,57 +61,64 @@ surgeon = Agent(
 
 # --- 4. TASKS ---
 
-# TASK 1: The Core Fix & Dockerization
+# TASK 1: Dynamic Code Fix & Containerization
 docker_fix_task = Task(
     description=f'''
-    The user needs a functional Node.js container in {repo_path}. 
-    1. Check for 'package.json'. If missing, create one with "express" and "cors".
-    2. Apply the requested fix based on this crash data: {{job_data}}.
-    3. MANDATORY: Create a 'Dockerfile' with node:18-alpine, WORKDIR /app, COPY, RUN npm install, EXPOSE 3000, and CMD ["node", "index.js"].
-    4. Create 'docker-compose.yml' mapping port 3000:3000.
+    Analyze the files in the workspace located at {repo_path}.
+    Identify the primary language and framework of the project.
+    
+    The user has provided the following specific instructions or bug description: 
+    "{{job_data}}"
+    
+    1. READ AND EXECUTE THE USER INSTRUCTION: If the user asked you to create a specific file, write a specific route, or fix a specific bug in "{{job_data}}", you MUST do exactly that using your file writer tool.
+    2. If the user instruction is empty or generic, perform a standard SRE containerization (create an appropriate Dockerfile and docker-compose.yml for the detected language).
+    3. Make sure to use your tools to save your code to the workspace.
     ''',
-    expected_output='Simplified Dockerfile, docker-compose.yml, and patched code written to the directory.',
+    expected_output='Code fixes and containerization files written to the workspace based strictly on the user instructions.',
     agent=surgeon
 )
 
-# 👇 NEW: TASK 2: DevSecOps Scan & RCA Report 👇
+# TASK 2: Dynamic DevSecOps Scan & RCA Report
 rca_and_security_task = Task(
     description=f'''
-    Now that the code is fixed and containerized, you must act as a DevSecOps Auditor.
-    1. Perform a brief security review of the files in {repo_path} (look for missing rate limiting, hardcoded secrets, or bad CORS rules).
-    2. Draft a highly professional "Root Cause Analysis & DevSecOps Report" in Markdown format.
-    3. The report MUST include:
-       - Incident Summary (Based on: {{job_data}})
-       - SRE Resolution (What Docker files you created and what code you changed)
-       - DevSecOps Audit (Any security vulnerabilities you noticed or recommend fixing)
-    4. MANDATORY FINAL STEP: You MUST use your file writer tool to save this exact Markdown report to this exact path: {rca_file_path}
+    Now that the code is fixed according to the user's instructions, draft a highly professional "Root Cause Analysis & DevSecOps Report" in Markdown format.
+    
+    1. The report MUST be completely unique to the repository you just analyzed and the specific fixes you just applied based on "{{job_data}}".
+    2. The report MUST include:
+       - Incident Summary: Explain what the user requested ("{{job_data}}") and what you found.
+       - SRE Resolution: Explain exactly what custom files you created or modified to fix the issue.
+       - DevSecOps Audit: Note any real security vulnerabilities you found in THIS specific codebase.
+    3. MANDATORY FINAL STEP: You MUST use your file writer tool to save this exact Markdown report to this exact path: {rca_file_path}
     ''',
-    expected_output='A professional TITAN_RCA_REPORT.md file successfully written to the disk.',
+    expected_output='A unique and professional TITAN_RCA_REPORT.md file successfully written to the disk.',
     agent=surgeon
 )
 
 if __name__ == "__main__":
     job_type = sys.argv[1] if len(sys.argv) > 1 else "REPO"
-    job_data = sys.argv[2] if len(sys.argv) > 2 else ""
+    passed_repo_path = sys.argv[2] if len(sys.argv) > 2 else repo_path
+    
+    # 👇 FIX: Capture the 4th argument (The Custom Prompt from the Frontend) 👇
+    custom_instruction = sys.argv[3] if len(sys.argv) > 3 else "No specific bug described. Perform a general DevSecOps audit and containerization."
 
     print(f"\n[AI AGENT] 🛰️ NEURAL LINK INITIALIZED...", flush=True)
     print(f"[AI AGENT] Mode: {job_type}", flush=True)
-    print(f"[AI AGENT] Target Workspace: {repo_path}", flush=True)
+    print(f"[AI AGENT] Target Workspace: {passed_repo_path}", flush=True)
     
     if not os.path.exists(repo_path):
         print(f"[AI AGENT] ❌ FATAL ERROR: Workspace path does not exist!", flush=True)
         sys.exit(1)
 
-    print(f"[AI AGENT] 🧠 Starting SRE logic for: {job_data[:50]}...", flush=True)
+    print(f"[AI AGENT] 🧠 Injecting Custom User Prompt: {custom_instruction[:50]}...", flush=True)
     
-    # 👇 FIXED: Notice how BOTH tasks are now passed into the Crew 👇
     crew = Crew(
         agents=[surgeon], 
         tasks=[docker_fix_task, rca_and_security_task], 
         process=Process.sequential
     )
     
-    result = crew.kickoff(inputs={'job_data': job_data})
+    # 👇 FIX: Pass the custom instruction into the Crew's memory 👇
+    result = crew.kickoff(inputs={'job_data': custom_instruction})
 
     print("\n[AI AGENT] 🏁 MISSION COMPLETE. Final SRE & DevSecOps Report Generated.", flush=True)
     print(result, flush=True)
