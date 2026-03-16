@@ -31,8 +31,8 @@ app.use((req, res, next) => {
 
 // --- THE BULLETPROOF DOWNLOAD ROUTE ---
 app.get('/downloads/:filename', (req, res) => {
-    // This perfectly calculates the exact path from server.js to the file
-    const filePath = path.join(__dirname, 'public', 'downloads', req.params.filename);
+    // process.cwd() forces it to start from the root of the project
+    const filePath = path.join(process.cwd(), 'public', 'downloads', req.params.filename);
     
     console.log(`[DOWNLOAD INITIATED] Fetching: ${filePath}`);
     
