@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { Terminal, Download, Flame, ShieldAlert, Cpu, Database, GitBranch, ChevronRight, Zap, BookOpen, Activity, Server, Wifi, Globe, ShieldCheck, Code, Layers, Box, Lock, User, LogOut } from 'lucide-react';
+import { Terminal, Download, Flame, ShieldAlert, Cpu, Database, GitBranch, ChevronRight, Zap, BookOpen, Activity, Server, Wifi, Globe, ShieldCheck, Code, Layers, Box, Lock, User, LogOut, Key, CheckCircle } from 'lucide-react';
 
 // --- CUSTOM HOOK: Fixed Cinematic Scroll Reveal ---
 const useScrollReveal = (activeTab) => {
@@ -47,6 +47,10 @@ const Dashboard = () => {
     const [coreAllocation, setCoreAllocation] = useState([]);
     const [telemetry, setTelemetry] = useState(null);
 
+    // --- BYOK SECURITY STATES ---
+    const [apiKey, setApiKey] = useState('');
+    const [keyStatus, setKeyStatus] = useState({ loading: false, message: '', type: '' });
+
     // --- SCROLL PROGRESS TRACKER ---
     useEffect(() => {
         const handleScroll = () => {
@@ -59,10 +63,43 @@ const Dashboard = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // --- SECURE KEY UPLOAD HANDLER ---
+    const handleSaveKey = async (e) => {
+        e.preventDefault();
+        if (!apiKey.trim()) return;
+
+        setKeyStatus({ loading: true, message: 'Encrypting and syncing with TITAN Vault...', type: 'info' });
+
+        try {
+            const res = await fetch('http://localhost:5000/api/users/save-key', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user?.token}` 
+                },
+                body: JSON.stringify({ 
+                    userId: user?._id || user?.id, 
+                    apiKey: apiKey 
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setKeyStatus({ loading: false, message: 'API Key cryptographically secured in vault.', type: 'success' });
+                setApiKey(''); // Clear the input for security
+            } else {
+                setKeyStatus({ loading: false, message: data.error || 'Vault synchronization failed.', type: 'error' });
+            }
+        } catch (err) {
+            setKeyStatus({ loading: false, message: 'Network failure. Vault unreachable.', type: 'error' });
+        }
+    };
+
     // --- DATA FETCHING ---
     const fetchTickets = async () => {
         try {
-            const res = await fetch('https://project-titan-1.onrender.com/api/tickets', {
+            const res = await fetch('http://localhost:5000/api/tickets', {
                 headers: { Authorization: `Bearer ${user?.token}` }
             });
             if (res.ok) {
@@ -77,7 +114,7 @@ const Dashboard = () => {
         if (!window.confirm("⚠️ WARNING: Are you sure you want to permanently purge this record from the Ledger?")) return;
         
         try {
-            const res = await fetch(`https://project-titan-1.onrender.com/${ticketId}`, {
+            const res = await fetch(`http://localhost:5000/${ticketId}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${user?.token}` }
             });
@@ -94,7 +131,7 @@ const Dashboard = () => {
 
     const fetchSystemStats = async () => {
         try {
-            const res = await fetch('https://project-titan-1.onrender.com/api/healer/stats', {
+            const res = await fetch('http://localhost:5000/api/healer/stats', {
                 headers: { Authorization: `Bearer ${user?.token}` }
             });
             if (res.ok) {
@@ -118,7 +155,7 @@ const Dashboard = () => {
         if(!window.confirm("⚠️ SYSTEM WARNING: Injecting fatal fault into live backend. Proceed?")) return;
         
         try {
-            const res = await fetch('https://project-titan-1.onrender.com/api/healer/crash', {
+            const res = await fetch('http://localhost:5000/api/healer/crash', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${user?.token}` }
             });
@@ -150,49 +187,59 @@ const Dashboard = () => {
         }
         
         setStatus('WORKING');
+        const repoName = repoUrl.split('/').pop().replace('.git', '');
         const isFullScan = !crashDesc || crashDesc.trim() === "";
         
-        setTerminalLogs(isFullScan 
-            ? ["[SYS_INIT] 🚀 Independent Full Repo Scan Initiated...", "[SYS_INIT] Handshaking with GitHub API..."]
-            : ["[SYS_INIT] 🚀 Targeted Fix Initiated...", "[SYS_INIT] Handshaking with GitHub API..."]
-        );
-
-        const logSequence = isFullScan ? [
-            { time: 1000, msg: "Allocating workspace memory & cloning FULL repo..." },
-            { time: 3000, msg: "Deploying Swarm for Deep Architecture Scan..." },
-            { time: 6000, msg: "Scanning files for vulnerabilities..." },
-            { time: 10000, msg: "Markdown generation complete..." },
-            { time: 30000, msg: "Archiving complete repository payload..." }
-        ] : [
-            { time: 1000, msg: "Allocating workspace memory..." },
-            { time: 3000, msg: "Deploying Language-Agnostic Agentic Swarm..." },
-            { time: 30000, msg: "Archiving DevSecOps payload..." }
-        ];
-
-        logSequence.forEach(log => {
-            setTimeout(() => { setTerminalLogs(prev => [...prev, log.msg]); }, log.time);
-        });
+        setTerminalLogs([
+            `[SYS_INIT] 🚀 Initializing TITAN Neural Link for: ${repoName}...`,
+            "[SYS_INIT] Handshaking with GitHub & Sandbox Orchestrator..."
+        ]);
         
         try {
-            const res = await fetch('https://project-titan-1.onrender.com/api/healer/start', {
+            const res = await fetch('http://localhost:5000/api/healer/start', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user?.token}` },
                 body: JSON.stringify({ repoUrl, crashDescription: isFullScan ? "FULL_REPO_SCAN" : crashDesc })
             });
 
-            if (res.ok) {
-                setTimeout(() => {
-                    setTerminalLogs(prev => [...prev, "MISSION COMPLETE. Payload ready."]);
-                    setStatus('SUCCESS');
-                    const repoName = repoUrl.split('/').pop().replace('.git', '');
-                    setDownloadLink(`https://project-titan-1.onrender.com/downloads/${repoName}-titan-fix-latest.zip`);
-                    fetchTickets(); 
-                    fetchSystemStats();
-                }, 32000); 
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                setStatus('IDLE');
+                setTerminalLogs(prev => [...prev, `[FATAL] Server rejected request: ${errData.message || 'Unknown error'}`]);
+                return;
             }
+
+            // Start active polling for live telemetry and real-time logs
+            const pollInterval = setInterval(async () => {
+                try {
+                    const statusRes = await fetch(`http://localhost:5000/api/healer/status/${repoName}`, {
+                        headers: { Authorization: `Bearer ${user?.token}` }
+                    });
+                    if (statusRes.ok) {
+                        const jobData = await statusRes.json();
+                        if (jobData.logs && jobData.logs.length > 0) {
+                            setTerminalLogs(jobData.logs);
+                        }
+                        if (jobData.status === 'SUCCESS') {
+                            clearInterval(pollInterval);
+                            setStatus('SUCCESS');
+                            setDownloadLink(`http://localhost:5000${jobData.downloadUrl || `/downloads/${repoName}-titan-fix-latest.zip`}`);
+                            fetchTickets(); 
+                            fetchSystemStats();
+                        } else if (jobData.status === 'FAILED') {
+                            clearInterval(pollInterval);
+                            setStatus('IDLE');
+                            setTerminalLogs(prev => [...prev, `[FATAL] Healing failed: ${jobData.error || 'Check server logs'}`]);
+                        }
+                    }
+                } catch (pollErr) {
+                    console.error("Telemetry polling error:", pollErr);
+                }
+            }, 1500);
+
         } catch (error) { 
             setStatus('IDLE'); 
-            setTerminalLogs(["[FATAL] Connection severed."]);
+            setTerminalLogs(["[FATAL] Connection severed. Is the backend running?"]);
         }
     };
 
@@ -254,8 +301,13 @@ const Dashboard = () => {
                                 <p className="text-sm font-bold text-white uppercase tracking-widest">{user?.name || 'Ayan Sayyad'}</p>
                                 <p className="text-[10px] text-cyan-400 font-mono mt-1">{user?.email}</p>
                             </div>
-                            <div className="p-2">
-                                <button onClick={logout} className="w-full text-left px-4 py-3 text-xs font-bold text-red-400 hover:bg-red-500/20 hover:text-red-300 rounded-xl flex items-center gap-3 uppercase tracking-widest"><LogOut className="w-4 h-4" /> Logout</button>
+                            <div className="p-2 flex flex-col gap-1">
+                                <button onClick={() => { setActiveTab('settings'); setIsProfileOpen(false); }} className="w-full text-left px-4 py-3 text-xs font-bold text-gray-300 hover:bg-white/10 hover:text-white rounded-xl flex items-center gap-3 uppercase tracking-widest transition-colors">
+                                    <Key className="w-4 h-4 text-cyan-400" /> Config & Keys
+                                </button>
+                                <button onClick={logout} className="w-full text-left px-4 py-3 text-xs font-bold text-red-400 hover:bg-red-500/20 hover:text-red-300 rounded-xl flex items-center gap-3 uppercase tracking-widest transition-colors">
+                                    <LogOut className="w-4 h-4" /> Logout
+                                </button>
                             </div>
                         </div>
                     )}
@@ -478,7 +530,7 @@ const Dashboard = () => {
                                     <Activity className="w-8 h-8 text-blue-400" />
                                 </div>
                                 <h3 className="text-2xl font-black text-white mb-4">Autonomous Diagnostics</h3>
-                                <p className="text-gray-400 leading-relaxed text-sm"><p className="text-gray-400 leading-relaxed text-sm">Input a target GitHub URL and crash logs. The AI swarm performs semantic code analysis, generates a logic patch, and packages the remediated repository into a deployable ZIP payload.</p></p>
+                                <p className="text-gray-400 leading-relaxed text-sm">Input a target GitHub URL and crash logs. The AI swarm performs semantic code analysis, generates a logic patch, and packages the remediated repository into a deployable ZIP payload.</p>
                             </div>
                             
                             {/* Card 2 */}
@@ -506,6 +558,56 @@ const Dashboard = () => {
                                 </div>
                                 <h3 className="text-2xl font-black text-white mb-4">Global Middleware Trap</h3>
                                 <p className="text-gray-400 leading-relaxed text-sm">An Express.js global error handler that catches unhandled promise rejections and fatal runtime errors, freezing the crash state and alerting the assigned SRE via Email.</p>
+                            </div>
+                        </div>
+                    </section>
+                )}
+
+                {/* -------- BYOK SECURITY VAULT -------- */}
+                {activeTab === 'settings' && (
+                    <section className="max-w-3xl mx-auto fade-in-up pt-10 pb-20 min-h-[70vh]">
+                        <div className="flex flex-col items-center text-center mb-12">
+                            <Lock className="w-16 h-16 text-cyan-400 mb-6 shadow-[0_0_30px_rgba(6,182,212,0.2)] rounded-full bg-cyan-500/10 p-3" />
+                            <h2 className="text-4xl font-black text-white mb-4 tracking-tight">Security & Credentials</h2>
+                            <p className="text-gray-400 text-sm max-w-lg leading-relaxed">Project TITAN utilizes a Bring-Your-Own-Key (BYOK) architecture. Your key is encrypted via military-grade AES-256 before entering the database.</p>
+                        </div>
+
+                        <div className="glass-panel rounded-[2rem] p-10 border-cyan-500/20 shadow-[0_0_40px_rgba(6,182,212,0.1)] relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-blue-500/5 backdrop-blur-3xl z-0"></div>
+                            
+                            <div className="relative z-10">
+                                <h3 className="text-xs font-black text-cyan-400 tracking-widest mb-6 uppercase flex items-center gap-2"><Key className="w-4 h-4"/> OpenAI API Key</h3>
+                                
+                                <form onSubmit={handleSaveKey} className="space-y-4">
+                                    <div className="relative">
+                                        <input 
+                                            type="password" 
+                                            value={apiKey}
+                                            onChange={(e) => setApiKey(e.target.value)}
+                                            placeholder="sk-proj-..." 
+                                            className="w-full bg-black/60 border border-white/10 rounded-2xl px-6 py-4 text-white font-mono text-sm outline-none focus:border-cyan-500/50 transition-colors placeholder:text-gray-600"
+                                            autoComplete="off"
+                                        />
+                                    </div>
+
+                                    <div className="flex justify-between items-center pt-4">
+                                        <div className="flex-1">
+                                            {keyStatus.message && (
+                                                <p className={`text-xs font-bold tracking-widest uppercase flex items-center gap-2 ${keyStatus.type === 'success' ? 'text-green-400' : keyStatus.type === 'error' ? 'text-red-400' : 'text-blue-400'}`}>
+                                                    {keyStatus.type === 'success' && <CheckCircle className="w-4 h-4"/>}
+                                                    {keyStatus.message}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <button 
+                                            type="submit" 
+                                            disabled={keyStatus.loading || !apiKey}
+                                            className="bg-white text-black rounded-2xl px-8 py-3 font-black uppercase tracking-widest text-[10px] shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                                        >
+                                            {keyStatus.loading ? 'Encrypting...' : 'Secure Key in Vault'}
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </section>

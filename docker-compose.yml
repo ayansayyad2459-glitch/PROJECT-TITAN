@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  titan-db:
+    image: postgres:15-alpine
+    container_name: titan-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: supersecretpassword123
+      POSTGRES_DB: titan_saas
+    ports:
+      - "5432:5432"
+    volumes:
+      - titan_pg_data:/var/lib/postgresql/data
+
+volumes:
+  titan_pg_data:

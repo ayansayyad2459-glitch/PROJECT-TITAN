@@ -1,7 +1,10 @@
-crewai
-langchain
-google-generativeai
-crewai-tools
-litellm
-groq
-# add any other python packages your swarm needs
+crewai>=1.10.0
+crewai-tools>=1.10.0
+langchain>=1.2.0
+langchain-google-genai>=4.2.0
+google-genai>=1.66.0
+litellm>=1.80.0
+groq>=0.37.0
+python-dotenv>=1.0.0
+pymongo>=4.6.0
+cryptography>=42.0.0

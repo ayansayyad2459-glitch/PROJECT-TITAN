@@ -1,17 +1,21 @@
 const express = require('express');
 const router = express.Router();
 
-// 1. Import all three functions from your controller
+// 1. Import functions from your controller
 const { 
     startHealing, 
     getSystemStats, 
-    triggerCrash 
+    triggerCrash,
+    getJobStatus
 } = require('../controllers/healercontroller');
 
 const { protect } = require('../middlewares/authmiddleware');
 
 // GET /api/healer/stats - Live Telemetry
 router.get('/stats', protect, getSystemStats);
+
+// GET /api/healer/status/:repoName - Live Job Telemetry & Logs
+router.get('/status/:repoName', protect, getJobStatus);
 
 // POST /api/healer/start - Manual AI Trigger
 router.post('/start', protect, startHealing);

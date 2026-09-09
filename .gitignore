@@ -14,5 +14,17 @@ temp_repos/
 *.log
 npm-debug.log*
 
+# Python
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
 # Editor directories
 .vscode/
+
+# Local data & stores
+mern-backend/data/*.json
+titan_local_store.json

@@ -14,7 +14,8 @@ const Register = () => {
         e.preventDefault();
         setError('');
         try {
-            const res = await fetch('https://project-titan-1.onrender.com/api/users', {
+            const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const res = await fetch(`${API_BASE}/api/users`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password }),
