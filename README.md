@@ -28,13 +28,16 @@ The platform operates on a decoupled microservices architecture bridging a MERN 
 
 ```text
 PROJECT-TITAN/
-├── mern-backend/       # Node.js API, Docker & SRE Trap
-│   ├── controllers/    # Route logic & AI triggers
-│   ├── models/         # MongoDB Schemas
-│   ├── healer-workspace/ 
-│   └── server.js       # Global SRE Entry Point
-├── frontend/           # React + Vite UI
-└── README.md           # System Documentation 
+├── mern-backend/         # Node.js API, Docker & SRE Trap
+│   ├── ai-sre-engine/    # Python/CrewAI autonomous healing engine
+│   ├── controllers/      # Route logic & AI triggers
+│   ├── models/           # MongoDB Schemas
+│   ├── middlewares/      # JWT auth & API-key guards
+│   ├── routes/           # Express routes (users, tickets, healer)
+│   └── server.js         # Global SRE Entry Point
+├── frontend/             # React + Vite UI
+├── docker-compose.yml    # Postgres container for local dev
+└── README.md             # System Documentation
 ```
 
 ## 🛠️ Installation & Setup
@@ -48,7 +51,7 @@ PROJECT-TITAN/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/PROJECT-TITAN.git
+git clone https://github.com/ayansayyad2459-glitch/PROJECT-TITAN.git
 cd PROJECT-TITAN
 ```
 
@@ -69,7 +72,7 @@ Ensure you are still inside the mern-backend directory, as the Node server trigg
 ```Bash
 pip install crewai langchain-groq python-dotenv litellm
 
-Create a .env file specifically inside mern-backend/healer-workspace for the agents:
+Create a .env file inside mern-backend/ai-sre-engine for the agents (the backend .env also works):
 GROQ_API_KEY=gsk_your_groq_api_key_here
 ```
 

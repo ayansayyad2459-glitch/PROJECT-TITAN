@@ -114,7 +114,7 @@ const Dashboard = () => {
         if (!window.confirm("⚠️ WARNING: Are you sure you want to permanently purge this record from the Ledger?")) return;
         
         try {
-            const res = await fetch(`http://localhost:5000/${ticketId}`, {
+            const res = await fetch(`http://localhost:5000/api/tickets/${ticketId}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${user?.token}` }
             });

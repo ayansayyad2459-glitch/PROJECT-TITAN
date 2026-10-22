@@ -1,1 +1,0 @@
-const express = require('express'); const app = express(); app.get('/status', (req, res) => { res.json({ 'bot': 'Titan', 'status': 'online' }); }); app.listen(3000, () => { console.log('Server listening on port 3000'); });
